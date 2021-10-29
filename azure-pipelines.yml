@@ -68,7 +68,7 @@ jobs:
     - task: ArchiveFiles@2
       displayName: 'Archive dist files'
       inputs:
-        rootFolderOrFile: dist
+        rootFolderOrFile: backend
         includeRootFolder: true
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_backend.zip'
