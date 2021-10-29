@@ -7,7 +7,7 @@ trigger:
 - master
 
 jobs:
-  - job:  Build Angular App
+  - job:  Build_Angular_App
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -47,7 +47,7 @@ jobs:
       displayName: 'Download Pipeline Artifact'
       inputs:
         targetPath: '${Build.ArtifactStagingDirectory}/dist/Frontend'
-  - job:  Build Node + Express App
+  - job:  Build_Node_Express_App
     pool:
       vmImage: ubuntu-latest
     steps:
