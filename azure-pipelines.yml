@@ -6,18 +6,70 @@
 trigger:
 - master
 
-pool:
-  vmImage: ubuntu-latest
-
-- task: NodeTool@0
-  inputs:
-    versionSpec: '12.22.3'
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+jobs:
+  - job:  Build Angular App
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.22.3'
+      displayName: 'Install Node.js'
+    - task: Npm@1
+      displayName: 'Install Angular/CLI'
+      inputs:
+        command: custom
+        workingDir: frontend
+        verbose: false
+        customCommand: 'install -g @angular/cli'
+    - task: Npm@1
+      displayName: 'Install Dependencies'
+      inputs:
+        workingDir: frontend
+        verbose: false
+    - task: Npm@1
+      displayName: 'Build App'
+      inputs:
+        command: custom
+        workingDir: frontend
+        verbose: false
+        customCommand: 'run build'
+    - task: ArchiveFiles@2
+      displayName: 'Archive dist files'
+      inputs:
+        rootFolderOrFile: dist
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifact'
+      inputs:
+        targetPath: '${Build.ArtifactStagingDirectory}'
+        artifact: drop
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifact'
+      inputs:
+        targetPath: '${Build.ArtifactStagingDirectory}/dist/Frontend'
+  - job:  Build Node + Express App
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.22.3'
+      displayName: 'Install Node.js'    
+    - task: Npm@1
+      displayName: 'Install Dependencies'
+      inputs:
+        workingDir: backend
+        verbose: false
+    - task: ArchiveFiles@2
+      displayName: 'Archive dist files'
+      inputs:
+        rootFolderOrFile: backend
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifact'
+      inputs:
+        targetPath: '${Build.ArtifactStagingDirectory}'
+        artifact: drop
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifact'
+      inputs:
+        targetPath: '${Build.ArtifactStagingDirectory}/Backend'
