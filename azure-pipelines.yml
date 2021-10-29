@@ -37,7 +37,7 @@ jobs:
     - task: ArchiveFiles@2
       displayName: 'Archive dist files'
       inputs:
-        rootFolderOrFile: '$(Build.BinariesDirectory)'
+        rootFolderOrFile: dist
         includeRootFolder: true
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
@@ -45,8 +45,9 @@ jobs:
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifact'
       inputs:
-        targetPath: '${Build.ArtifactStagingDirectory}'
-        artifact: drop
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'drop'
+        publishLocation: 'pipeline'
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifact'
       inputs:
@@ -71,8 +72,9 @@ jobs:
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifact'
       inputs:
-        targetPath: '${Build.ArtifactStagingDirectory}'
-        artifact: drop
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'drop'
+        publishLocation: 'pipeline'
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifact'
       inputs:
