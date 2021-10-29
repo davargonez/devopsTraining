@@ -40,7 +40,7 @@ jobs:
         rootFolderOrFile: dist
         includeRootFolder: true
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_frontend.zip'
         replaceExistingArchive: true
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifact'
@@ -68,7 +68,11 @@ jobs:
     - task: ArchiveFiles@2
       displayName: 'Archive dist files'
       inputs:
-        rootFolderOrFile: backend
+        rootFolderOrFile: dist
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_backend.zip'
+        replaceExistingArchive: true
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifact'
       inputs:
