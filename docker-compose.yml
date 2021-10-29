@@ -1,0 +1,35 @@
+version: '3.7' # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+  frontend: # name of the first service
+    build: frontend # specify the directory of the Dockerfile
+    ports:
+      - "4200:4200" # specify port forewarding
+    container_name: frontend
+    depends_on:
+      - "backend"
+    expose:
+      - "4200"
+
+  backend: #name of the second service
+    build: backend # specify the directory of the Dockerfile
+    ports:
+      - "3000:3000" #specify ports forewarding
+    container_name: backend
+    links:
+      - database # link backend to database service    
+    depends_on:
+      - "database"
+
+  database: # name of the third service
+    image: mongo # specify image to build container from
+    ports:
+      - "27017:27017" # specify port forewarding
+    expose:
+      - "27017"
+    container_name: db
+    volumes: 
+      - /data/db      
+
+    ##Linked from: https://www.jolugama.com/blog/2018/11/09/app-mean-angular-docker/
