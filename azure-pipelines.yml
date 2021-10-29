@@ -8,81 +8,90 @@ trigger:
 
 variables:
   System.Debug: true
-  
-jobs:
-  - job:  Build_Angular_App
+stages:
+- stage: CompileAPP
+  jobs:
+    - job:  Build_Angular_App
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '12.22.3'
+        displayName: 'Install Node.js'
+      - task: Npm@1
+        displayName: 'Install Angular/CLI'
+        inputs:
+          command: custom
+          workingDir: frontend
+          verbose: false
+          customCommand: 'install -g @angular/cli'
+      - task: Npm@1
+        displayName: 'Install Dependencies'
+        inputs:
+          workingDir: frontend
+          verbose: false
+      - task: Npm@1
+        displayName: 'Build App'
+        inputs:
+          command: custom
+          workingDir: frontend
+          verbose: false
+          customCommand: 'run build'
+      - task: ArchiveFiles@2
+        displayName: 'Archive dist files'
+        inputs:
+          rootFolderOrFile: frontend/dist
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_frontend.zip'
+          replaceExistingArchive: true
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Pipeline Artifact'
+        inputs:
+          targetPath: '$(Pipeline.Workspace)'
+          artifact: 'frontApp'
+          publishLocation: 'pipeline'
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Pipeline Artifact'
+        inputs:
+          targetPath: '${Build.ArtifactStagingDirectory}/dist/Frontend'
+    - job:  Build_Node_Express_App
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '12.22.3'
+        displayName: 'Install Node.js'    
+      - task: Npm@1
+        displayName: 'Install Dependencies'
+        inputs:
+          workingDir: backend
+          verbose: false
+      - task: ArchiveFiles@2
+        displayName: 'Archive dist files'
+        inputs:
+          rootFolderOrFile: backend
+          includeRootFolder: true
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_backend.zip'
+          replaceExistingArchive: true
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Pipeline Artifact'
+        inputs:
+          targetPath: '$(Pipeline.Workspace)'
+          artifact: 'backApp'
+          publishLocation: 'pipeline'
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Pipeline Artifact'
+        inputs:
+          targetPath: '${Build.ArtifactStagingDirectory}/Backend'
+- stage: CreateImage
+  dependsOn: CompileAPP
+  jobs:
+  - job:  Image
     pool:
-      vmImage: ubuntu-latest
+        vmImage: ubuntu-latest
     steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '12.22.3'
-      displayName: 'Install Node.js'
-    - task: Npm@1
-      displayName: 'Install Angular/CLI'
-      inputs:
-        command: custom
-        workingDir: frontend
-        verbose: false
-        customCommand: 'install -g @angular/cli'
-    - task: Npm@1
-      displayName: 'Install Dependencies'
-      inputs:
-        workingDir: frontend
-        verbose: false
-    - task: Npm@1
-      displayName: 'Build App'
-      inputs:
-        command: custom
-        workingDir: frontend
-        verbose: false
-        customCommand: 'run build'
-    - task: ArchiveFiles@2
-      displayName: 'Archive dist files'
-      inputs:
-        rootFolderOrFile: frontend/dist
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_frontend.zip'
-        replaceExistingArchive: true
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish Pipeline Artifact'
-      inputs:
-        targetPath: '$(Pipeline.Workspace)'
-        artifact: 'frontApp'
-        publishLocation: 'pipeline'
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download Pipeline Artifact'
-      inputs:
-        targetPath: '${Build.ArtifactStagingDirectory}/dist/Frontend'
-  - job:  Build_Node_Express_App
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '12.22.3'
-      displayName: 'Install Node.js'    
-    - task: Npm@1
-      displayName: 'Install Dependencies'
-      inputs:
-        workingDir: backend
-        verbose: false
-    - task: ArchiveFiles@2
-      displayName: 'Archive dist files'
-      inputs:
-        rootFolderOrFile: backend
-        includeRootFolder: true
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_backend.zip'
-        replaceExistingArchive: true
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish Pipeline Artifact'
-      inputs:
-        targetPath: '$(Pipeline.Workspace)'
-        artifact: 'backApp'
-        publishLocation: 'pipeline'
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download Pipeline Artifact'
-      inputs:
-        targetPath: '${Build.ArtifactStagingDirectory}/Backend'
+    - script: echo StageImagen
