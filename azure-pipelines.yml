@@ -49,7 +49,7 @@ stages:
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Pipeline Artifact'
         inputs:
-          targetPath: '$(Build.ArtifactStagingDirectory)'
+          targetPath: '$(System.DefaultWorkingDirectory)/frontend'
           artifact: 'frontApp'
           publishLocation: 'pipeline'
       - task: DownloadPipelineArtifact@2
