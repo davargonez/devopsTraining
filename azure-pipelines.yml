@@ -105,4 +105,4 @@ stages:
     pool:
         vmImage: ubuntu-latest
     steps:
-    - script: echo StageImagen
+    - script: echo $(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/backApp/Dockerfile
