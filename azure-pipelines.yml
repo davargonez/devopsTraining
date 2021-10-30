@@ -55,7 +55,7 @@ stages:
       - task: DownloadPipelineArtifact@2
         displayName: 'Download Pipeline Artifact'
         inputs:
-          targetPath: '${Build.ArtifactStagingDirectory}/dist/MEAN'
+          targetPath: '${Build.ArtifactStagingDirectory}/frontend'
     - job:  Build_Node_Express_App
       pool:
         vmImage: ubuntu-latest
@@ -79,7 +79,7 @@ stages:
             Dockerfile
             package.json
             package-lock.json
-          TargetFolder: '$(System.DefaultWorkingDirectory)/Backend'
+          TargetFolder: '$(System.DefaultWorkingDirectory)/backend'
       - task: ArchiveFiles@2
         displayName: 'Archive node files'
         inputs:
