@@ -49,7 +49,7 @@ stages:
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Pipeline Artifact'
         inputs:
-          targetPath: '$(Pipeline.Workspace)'
+          targetPath: '$(Build.ArtifactStagingDirectory)'
           artifact: 'frontApp'
           publishLocation: 'pipeline'
       - task: DownloadPipelineArtifact@2
@@ -69,8 +69,19 @@ stages:
         inputs:
           workingDir: backend
           verbose: false
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/'
+          Contents: |
+            model/**
+            routes/**
+            app.js
+            Dockerfile
+            package.json
+            package-lock.json
+          TargetFolder: '$(System.DefaultWorkingDirectory)/Backend'
       - task: ArchiveFiles@2
-        displayName: 'Archive dist files'
+        displayName: 'Archive node files'
         inputs:
           rootFolderOrFile: backend
           includeRootFolder: true
@@ -80,7 +91,7 @@ stages:
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Pipeline Artifact'
         inputs:
-          targetPath: '$(Pipeline.Workspace)'
+          targetPath: '$(System.DefaultWorkingDirectory)/Backend'
           artifact: 'backApp'
           publishLocation: 'pipeline'
       - task: DownloadPipelineArtifact@2
