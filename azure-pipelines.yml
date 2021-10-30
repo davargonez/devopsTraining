@@ -38,6 +38,13 @@ stages:
           workingDir: frontend
           verbose: false
           customCommand: 'run build'
+      - task: CopyFiles@2
+        displayName: 'Copy k8s Frontend Files'
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/kubernetes'
+          Contents: |
+            deploymentFront.yml
+          TargetFolder: '$(System.DefaultWorkingDirectory)/kubernetesfront'
       - task: ArchiveFiles@2
         displayName: 'Archive dist files'
         inputs:
@@ -52,10 +59,20 @@ stages:
           targetPath: '$(System.DefaultWorkingDirectory)/frontend'
           artifact: 'frontApp'
           publishLocation: 'pipeline'
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Pipeline k8s Frontend Artifact'
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/kubernetesfront'
+          artifact: 'frontk8s'
+          publishLocation: 'pipeline'
       - task: DownloadPipelineArtifact@2
         displayName: 'Download Pipeline Artifact'
         inputs:
           targetPath: '${Build.ArtifactStagingDirectory}/frontend'
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Pipeline k8s Frontend Artifact'
+        inputs:
+          targetPath: '${Build.ArtifactStagingDirectory}/kubernetesfront'
     - job:  Build_Node_Express_App
       pool:
         vmImage: ubuntu-latest
@@ -70,6 +87,7 @@ stages:
           workingDir: backend
           verbose: false
       - task: CopyFiles@2
+        displayName: 'Copy Backend Files'
         inputs:
           SourceFolder: '$(Build.SourcesDirectory)/backend'
           Contents: |
@@ -80,6 +98,13 @@ stages:
             package.json
             package-lock.json
           TargetFolder: '$(System.DefaultWorkingDirectory)/backend'
+      - task: CopyFiles@2
+        displayName: 'Copy k8s Backend Files'
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/kubernetes'
+          Contents: |
+            deploymentBack.yml
+          TargetFolder: '$(System.DefaultWorkingDirectory)/kubernetesback'
       - task: ArchiveFiles@2
         displayName: 'Archive node files'
         inputs:
@@ -89,15 +114,25 @@ stages:
           archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)_backend.zip'
           replaceExistingArchive: true
       - task: PublishPipelineArtifact@1
-        displayName: 'Publish Pipeline Artifact'
+        displayName: 'Publish Pipeline Backend Artifact'
         inputs:
           targetPath: '$(System.DefaultWorkingDirectory)/backend'
           artifact: 'backApp'
+          publishLocation: 'pipeline'
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Pipeline k8s Backend Artifact'
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/kubernetesback'
+          artifact: 'backk8s'
           publishLocation: 'pipeline'
       - task: DownloadPipelineArtifact@2
         displayName: 'Download Pipeline Artifact'
         inputs:
           targetPath: '${Build.ArtifactStagingDirectory}/backend'
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Pipeline k8s Backend Artifact'
+        inputs:
+          targetPath: '${Build.ArtifactStagingDirectory}/kubernetesback'
 - stage: CreateImage
   dependsOn: CompileAPP
   jobs:
