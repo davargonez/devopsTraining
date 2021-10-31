@@ -44,6 +44,7 @@ stages:
           SourceFolder: '$(Build.SourcesDirectory)/kubernetes'
           Contents: |
             deploymentFront.yml
+            deploymentApp.yml
           TargetFolder: '$(System.DefaultWorkingDirectory)/kubernetesfront'
       - task: ArchiveFiles@2
         displayName: 'Archive dist files'
@@ -104,6 +105,7 @@ stages:
           SourceFolder: '$(Build.SourcesDirectory)/kubernetes'
           Contents: |
             deploymentBack.yml
+            deploymentApp.yml
           TargetFolder: '$(System.DefaultWorkingDirectory)/kubernetesback'
       - task: ArchiveFiles@2
         displayName: 'Archive node files'
@@ -140,4 +142,5 @@ stages:
     pool:
         vmImage: ubuntu-latest
     steps:
-    - script: echo $(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/backApp/Dockerfile
+    - script: cat $(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/backApp/Dockerfile
+    - script: cat $(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/frontApp/Dockerfile 
