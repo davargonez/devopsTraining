@@ -142,5 +142,5 @@ stages:
     pool:
         vmImage: ubuntu-latest
     steps:
-    - script: cat $(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/backApp/Dockerfile
-    - script: cat $(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/frontApp/Dockerfile 
+    - script: cat $(Build.SourcesDirectory)/backend/Dockerfile
+    - script: cat $(Build.SourcesDirectory)/frontend/Dockerfile 
