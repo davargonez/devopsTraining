@@ -138,7 +138,7 @@ stages:
 - stage: ValidateDockerfiles
   dependsOn: CompileAPP
   jobs:
-  - job:  Image
+  - job:  Validate
     pool:
         vmImage: ubuntu-latest
     steps:
