@@ -143,4 +143,37 @@ stages:
         vmImage: ubuntu-latest
     steps:
     - script: cat $(Build.SourcesDirectory)/backend/Dockerfile
-    - script: cat $(Build.SourcesDirectory)/frontend/Dockerfile 
+    - task: Docker@2
+      displayName: 'buildImage FrontApp'
+      inputs:
+        containerRegistry: devopsTrainingDockerHub
+        repository: 'davargonez/devops_training'
+        command: build
+        Dockerfile: '$(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/frontApp/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/frontApp'
+        tags: 'frontend_$(Build.BuildId)'
+    - task: Docker@2
+      displayName: 'pushImage FrontApp'
+      inputs:
+        containerRegistry: 'docker-registry'
+        repository: 'davargonez/devops_training'
+        command: push
+        tags: 'frontend_$(Build.BuildId)'
+
+    - script: cat $(Build.SourcesDirectory)/frontend/Dockerfile
+    - task: Docker@2
+      displayName: 'buildImage BackApp'
+      inputs:
+        containerRegistry: devopsTrainingDockerHub
+        repository: 'davargonez/devops_training'
+        command: build
+        Dockerfile: '$(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/backApp/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)/_davargonez.devopsTraining/backApp'
+        tags: 'backend_$(Build.BuildId)'
+    - task: Docker@2
+      displayName: 'pushImage BackApp'
+      inputs:
+        containerRegistry: 'docker-registry'
+        repository: 'davargonez/devops_training'
+        command: push
+        tags: 'backend_$(Build.BuildId)'
