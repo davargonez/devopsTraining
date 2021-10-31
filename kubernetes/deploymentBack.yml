@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: devopsTraining
+  name: devopstraining
   labels:
-    app: backEnd
+    app: backend
 spec:
   selector:
     matchLabels:
@@ -14,11 +14,11 @@ spec:
   template:
     metadata:
       labels:
-        app: backEnd
+        app: backend
         octopusexport: OctopusExport
     spec:
       containers:
-        - name: backEnd
+        - name: backend
           image: 'devops_training:backEnd_18'
           ports:
             - name: backendport
