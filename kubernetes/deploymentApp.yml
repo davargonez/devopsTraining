@@ -3,25 +3,35 @@ kind: Deployment
 metadata:
   name: devopstraining
   labels:
-    app: backend
+    app: web
 spec:
   selector:
     matchLabels:
       octopusexport: OctopusExport
   replicas: 1
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 2
   template:
     metadata:
       labels:
-        app: backend
+        app: web
         octopusexport: OctopusExport
     spec:
+      hostNetwork: true
       containers:
+        - name: frontend
+          image: 'davargonez/devops_training:frontend_#{version}#'
+          ports:
+            - name: appfrontport
+              containerPort: 4200
+              protocol: TCP
         - name: backend
           image: 'davargonez/devops_training:backend_#{version}#'
           ports:
-            - name: backendport
+            - name: appbackport
               containerPort: 3000
               protocol: TCP
       affinity:
@@ -36,3 +46,20 @@ spec:
                       values:
                         - web
                 topologyKey: kubernetes.io/hostname
+apiVersion: v1
+kind: Service
+metadata:
+  name: devopstrainingservice
+spec:
+  selector:
+    app: web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4200
+  clusterIP: 10.244.0.0
+  type:LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 52.149.190.127    

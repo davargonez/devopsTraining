@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 'davargonez/devops_training:frontend_21'
+          image: 'davargonez/devops_training:frontend_#{version}#'
           ports:
             - name: appfrontport
               containerPort: 4200

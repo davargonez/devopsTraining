@@ -3,61 +3,6 @@ const express = require('express');
 const app = express();
 const userRoutes = express.Router();
 
-//MongoDB URL in docker-compose file
-const dbHost = 'mongodb://database/devopsTraining';
-
-//Connect to mongodb
-mongoose.connect(dbHost).catch(error => handleError(error));
-
-// //New schema for mongoose
-// const userSchema = new mongoose.Schema({
-//   name: String,
-//   age: Number
-// });
-
-// //New model for mongoose
-// const User = mongoose.model('User', userSchema);
-
-// // Get api listings
-// userRoutes.get('/', (req,res) => {
-//   res.send('Api get works');
-// });
-
-// // Get all users
-// userRoutes.get('/users', (req,res) => {
-//   User.find({}, (err, users) => {
-//     if (err) res.status(500).send(error)
-
-//     res.status(200).json(users);
-//   });
-// });
-
-// //Get one user
-// userRoutes.get('/users/:id',(req,res) => {
-//     User.findById(req.param.id, (err, users) => {
-//         if (err) res.status(500).send(error)
-
-//         res.status(200).json(users);
-//     });
-// });
-
-// //Create user
-// userRoutes.post('/users', (req,res) => {
-//   let user = new User({
-//       name: req.body.name,
-//       age: req.body.age
-//   });
-
-//   user.save(error => {
-//       if (error) res.status(500).send(error);
-
-//       res.status(201).json({
-//           message: 'User created successfully'
-//       });
-//   });
-
-// });
-
 let User = require('../model/User');
 
 // api to add user

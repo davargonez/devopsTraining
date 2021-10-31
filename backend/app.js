@@ -4,7 +4,8 @@ bodyParser = require('body-parser'),
 cors = require('cors'),
 mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/mean', { useNewUrlParser: true }).then(
+var uri  = 'mongodb://dbMean:I87cgTbKt5eGqYrq@cluster0-shard-00-00.funux.mongodb.net:27017,cluster0-shard-00-01.funux.mongodb.net:27017,cluster0-shard-00-02.funux.mongodb.net:27017/mean?ssl=true&replicaSet=atlas-9kyu01-shard-0&authSource=admin&retryWrites=true&w=majority';
+mongoose.connect(uri, { useNewUrlParser: true }).then(
   () => {console.log('Database is connected') },
   err => { console.log('Can not connect to the database'+ err)});
 
