@@ -23,13 +23,13 @@ spec:
       hostNetwork: true
       containers:
         - name: frontend
-          image: 'davargonez/devops_training:frontend_#{version}#'
+          image: davargonez/devops_training:frontend_#{version}#
           ports:
             - name: appfrontport
               containerPort: 4200
               protocol: TCP
         - name: backend
-          image: 'davargonez/devops_training:backend_#{version}#'
+          image: davargonez/devops_training:backend_#{version}#
           ports:
             - name: appbackport
               containerPort: 3000
@@ -58,7 +58,7 @@ spec:
       port: 80
       targetPort: 4200
   clusterIP: 10.244.0.0
-  type:LoadBalancer
+  type: LoadBalancer
 status:
   loadBalancer:
     ingress:
