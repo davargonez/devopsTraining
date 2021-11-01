@@ -1,65 +1,113 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: devopstraining
-  labels:
-    app: web
-spec:
-  selector:
-    matchLabels:
-      octopusexport: OctopusExport
-  replicas: 1
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 2
-  template:
-    metadata:
-      labels:
-        app: web
-        octopusexport: OctopusExport
-    spec:
-      hostNetwork: true
-      containers:
-        - name: frontend
-          image: davargonez/devops_training:frontend_#{version}#
-          ports:
-            - name: appfrontport
-              containerPort: 4200
-              protocol: TCP
-        - name: backend
-          image: davargonez/devops_training:backend_#{version}#
-          ports:
-            - name: appbackport
-              containerPort: 3000
-              protocol: TCP
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - web
-                topologyKey: kubernetes.io/hostname
-apiVersion: v1
-kind: Service
-metadata:
-  name: devopstrainingservice
-spec:
-  selector:
-    app: web
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 4200
-  clusterIP: 10.0.0.12
-  type: LoadBalancer
-status:
-  loadBalancer:
-    ingress:
-    - ip: 52.149.190.127    
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: devops-training-app
+  spec:
+    finalizers:
+      - kubernetes
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: devops-training-back
+    namespace: devops-training-app
+    labels:
+      app: web
+  spec:
+    selector:
+      matchLabels:        
+        app: devops-training-back
+    replicas: 1
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 2
+    template:
+      metadata:
+        labels:
+          app: devops-training-back          
+      spec:
+        hostNetwork: true
+        containers:
+          - name: devops-training-back
+            image: davargonez/devops_training:backend_#{version}#
+            ports:
+              - name: appbackport
+                containerPort: 3000
+                protocol: TCP          
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - web
+                  topologyKey: kubernetes.io/hostname
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: devops-training-back
+    namespace: devops-training-app
+  spec:
+    ports:
+      - port: 3000
+    selector:
+       app:  devops-training-back
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: devops-training-front
+    namespace: devops-training-app
+    labels:
+      app: web
+  spec:
+    selector:
+      matchLabels:        
+        app: devops-training-front
+    replicas: 1
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 2
+    template:
+      metadata:
+        labels:
+          app: devops-training-front          
+      spec:
+        hostNetwork: true
+        containers:
+          - name: devops-training-front
+            image: davargonez/devops_training:frontend_#{version}#
+            ports:
+              - name: appfrontport
+                containerPort: 4200
+                protocol: TCP          
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - web
+                  topologyKey: kubernetes.io/hostname
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: devops-training-front
+    namespace: devops-training-app
+  spec:
+    type: LoadBalancer
+    ports:
+      - port: 80
+      - targetPort: 4200
+    selector:
+      app:  devops-training-front

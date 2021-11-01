@@ -45,6 +45,7 @@ stages:
           Contents: |
             deploymentFront.yml
             deploymentApp.yml
+            deploymentService.yml
           TargetFolder: '$(System.DefaultWorkingDirectory)/kubernetesfront'
       - task: ArchiveFiles@2
         displayName: 'Archive dist files'
@@ -106,6 +107,7 @@ stages:
           Contents: |
             deploymentBack.yml
             deploymentApp.yml
+            deploymentService.yml
           TargetFolder: '$(System.DefaultWorkingDirectory)/kubernetesback'
       - task: ArchiveFiles@2
         displayName: 'Archive node files'
