@@ -5,7 +5,7 @@ metadata:
   name: devops-training-app
 spec:
   finalizers:
-    - kubernetes
+  - kubernetes
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,12 +31,12 @@ spec:
     spec:
       hostNetwork: true
       containers:
-        - name: devops-training-back
-          image: davargonez/devops_training:backend_#{version}#
-          ports:
-            - name: appbackport
-              containerPort: 3000
-              protocol: TCP          
+      - name: devops-training-back
+        image: davargonez/devops_training:backend_#{version}#
+        ports:
+        - name: appbackport
+          containerPort: 3000
+          protocol: TCP          
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -57,9 +57,9 @@ metadata:
   namespace: devops-training-app
 spec:
   ports:
-    - port: 3000
+  - port: 3000
   selector:
-      app:  devops-training-back
+    app:  devops-training-back
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -85,12 +85,12 @@ spec:
     spec:
       hostNetwork: true
       containers:
-        - name: devops-training-front
-          image: davargonez/devops_training:frontend_#{version}#
-          ports:
-            - name: appfrontport
-              containerPort: 4200
-              protocol: TCP          
+      - name: devops-training-front
+        image: davargonez/devops_training:frontend_#{version}#
+        ports:
+        - name: appfrontport
+          containerPort: 4200
+          protocol: TCP          
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -112,7 +112,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 80
-    - targetPort: 4200
+  - port: 80
+    protocol: TCP
+    targetPort: 4200
   selector:
     app:  devops-training-front
