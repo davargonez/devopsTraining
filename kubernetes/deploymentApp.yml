@@ -53,7 +53,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: devops-training-back
+  name: devops-training-back-svc
   namespace: devops-training-app
 spec:
   ports:
@@ -107,12 +107,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: devops-training-front
+  name: devops-training-front-svc
   namespace: devops-training-app
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+  - port: 4200
     protocol: TCP
     targetPort: 4200
   selector:

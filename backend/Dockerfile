@@ -7,7 +7,7 @@ WORKDIR /usr/src/backend
 #copy package.json with instructions to image
 COPY package.json /usr/src/backend
 #install dependencies
-RUN npm install nodemon && npm install
+RUN npm install
 #copy all data from backend of my project to image
 COPY . /usr/src/backend
 #port
